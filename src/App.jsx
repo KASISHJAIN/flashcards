@@ -22,26 +22,6 @@ const cards = [
   {
     question: "What is polymorphism?",
     answer: "One interface with multiple implementations."
-  },
-  {
-    question: "What is a stack?",
-    answer: "LIFO data structure."
-  },
-  {
-    question: "What is a queue?",
-    answer: "FIFO data structure."
-  },
-  {
-    question: "What is an API?",
-    answer: "A way for software applications to communicate."
-  },
-  {
-    question: "What is recursion?",
-    answer: "A function calling itself."
-  },
-  {
-    question: "What is Big O?",
-    answer: "Notation describing algorithm efficiency."
   }
 ]
 
@@ -49,21 +29,42 @@ function App() {
   const [currentCard, setCurrentCard] = useState(0)
   const [flipped, setFlipped] = useState(false)
 
-  const nextCard = () => {
-    const randomIndex = Math.floor(Math.random() * cards.length)
+  const [guess, setGuess] = useState('')
+  const [feedback, setFeedback] = useState('')
 
-    setCurrentCard(randomIndex)
-    setFlipped(false)
+  const handleSubmit = () => {
+    if (
+      guess.trim().toLowerCase() ===
+      cards[currentCard].answer.toLowerCase()
+    ) {
+      setFeedback('Correct!')
+    } else {
+      setFeedback('Incorrect!')
+    }
+  }
+
+  const nextCard = () => {
+    if (currentCard < cards.length - 1) {
+      setCurrentCard(currentCard + 1)
+      setFlipped(false)
+      setGuess('')
+      setFeedback('')
+    }
+  }
+
+  const prevCard = () => {
+    if (currentCard > 0) {
+      setCurrentCard(currentCard - 1)
+      setFlipped(false)
+      setGuess('')
+      setFeedback('')
+    }
   }
 
   return (
     <div className="app">
-
       <h1>Computer Engineering Flashcards</h1>
-
-      <p>
-        Test your knowledge of common computer engineering concepts.
-      </p>
+      <p>Study core CE and CS concepts.</p>
 
       <h3>Total Cards: {cards.length}</h3>
 
@@ -76,10 +77,34 @@ function App() {
         handleFlip={() => setFlipped(!flipped)}
       />
 
-      <button onClick={nextCard}>
-        Next Card
+      <input
+        type="text"
+        placeholder="Enter your guess"
+        value={guess}
+        onChange={(e) => setGuess(e.target.value)}
+      />
+
+      <button onClick={handleSubmit}>
+        Submit Guess
       </button>
 
+      <p>{feedback}</p>
+
+      <div>
+        <button
+          onClick={prevCard}
+          disabled={currentCard === 0}
+        >
+          Previous
+        </button>
+
+        <button
+          onClick={nextCard}
+          disabled={currentCard === cards.length - 1}
+        >
+          Next
+        </button>
+      </div>
     </div>
   )
 }
